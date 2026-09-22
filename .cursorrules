@@ -1,0 +1,52 @@
+﻿# ==============================================================================
+# .cursorrules — STANDARDS DE DÉVELOPPEMENT UNIVERSELS (NEXT.JS + SUPABASE SSR)
+# Organisation : EFFICIENS-ENERGIA | Moteur Multi-Agents Antigravity
+# Application : Obligatoire pour tout IDE (Cursor, Windsurf) et agent d'ingénierie
+# ==============================================================================
+
+You are a Senior Full-Stack Engineer and Architect expert in Next.js (App Router), TypeScript, Tailwind CSS, Supabase SSR, and PostgreSQL RLS.
+
+## 1. ARCHITECTURE APPLICATIVE (NEXT.JS APP ROUTER)
+- Framework : Next.js 15+ avec App Router obligatoire (`app/`).
+- TypeScript : Typage strict sans complaisance. Bannir `any`. Préférer les types inférés ou validés via Zod.
+- Server Components par défaut : Tout composant est un Server Component sauf nécessité impérative de hooks React (`useState`, `useEffect`, `useRouter`, etc.), auquel cas placer explicitement `'use client'` en première ligne.
+- Server Actions (`'use server'`) : Valider systématiquement tous les arguments d'entrée via des schémas Zod (`z.object({...})`). Vérifier l'authentification de l'utilisateur (`supabase.auth.getUser()`) avant toute mutation SQL ou Storage.
+- Revalidation : Invalider le cache Next.js via `revalidatePath('/chemin')` après toute mutation de données.
+
+## 2. INTÉGRATION SUPABASE SSR (@supabase/ssr)
+- Bibliothèque : Utiliser exclusivement `@supabase/ssr` avec `@supabase/supabase-js`.
+- Clients standardisés (`utils/supabase/`) :
+  - Client Browser : `utils/supabase/client.ts` via `createBrowserClient(NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY)`.
+  - Client Serveur : `utils/supabase/server.ts` via `createServerClient` avec gestion asynchrone des cookies (`await cookies()`).
+  - Middleware de Session : `utils/supabase/middleware.ts` pour le rafraîchissement automatique des tokens de session et la protection des routes privées.
+- Sécurité RLS (Row Level Security) :
+  - Toujours utiliser `supabase.auth.getUser()` (qui valide le token cryptographiquement côté serveur) et JAMAIS `getSession()` dans les contextes serveur.
+  - Activer RLS sur 100% des tables PostgreSQL (`ALTER TABLE ... ENABLE ROW LEVEL SECURITY;`).
+
+## 3. FLUX D'AUTHENTIFICATION & PKCE
+- Route Callback PKCE obligatoire : `app/auth/callback/route.ts` recevant le code temporaire PKCE (`?code=...`) et l'échangeant contre une session via `supabase.auth.exchangeCodeForSession(code)`.
+- Gestion des redirections : Conserver l'URL cible initiale via le paramètre `?next=...` (ex: `/auth/callback?next=/profile` ou `/auth/callback?next=/reset-password`).
+- Support universel : Google OAuth 2.0, GitHub OAuth, Magic Links (e-mail sans mot de passe) et e-mail/mot de passe classique.
+
+## 4. DESIGN SYSTEM, TAILWIND CSS & MODE SOMBRE
+- Styling : Tailwind CSS natif avec classes sémantiques.
+- Mode Sombre Natif : Chaque composant doit comporter ses variantes sombres via le préfixe `dark:` (ex: `bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 border-slate-200 dark:border-slate-800`).
+- Accessibilité : Conformité WCAG AA. Balisage ARIA strict (`role="status"`, `role="dialog"`, `aria-modal="true"`, gestion focus trap et touche `Échap`).
+- États Vides "Fail-Honest" (Règle 20) : Bannir les écrans blancs et les entités fictives. Utiliser le composant `<FailHonestState />`.
+
+## 5. SUPABASE STORAGE (AVATARS & DOCUMENTS)
+- Buckets : Bucket `avatars` configuré en public.
+- Isolation : Structurer les fichiers sous le dossier de l'utilisateur (`avatars/${userId}/${fileName}`).
+- Politiques RLS Storage : Lecture publique permise, écriture et suppression strictement réservées au propriétaire (`(storage.foldername(name))[1] = auth.uid()::text`).
+
+## 6. SÉCURITÉ GIT & VARIABLES D'ENVIRONNEMENT
+- Fichiers `.env` :
+  - `.env.local` réservé exclusivement à l'environnement local. Ne JAMAIS le commiter.
+  - `.env.example` anonymisé avec des placeholders explicites (`https://votre-projet.supabase.co`).
+- `.gitignore` étanche : Doit contenir `.env*.local`, `.env`, `.next/`, `node_modules/`, `*.log`.
+- Zéro Fuite de Secrets : Contrôle automatique via `pre-push-check.ps1` avant tout push.
+- Organisation GitHub : Pousser systématiquement sur l'organisation `EFFICIENS-ENERGIA`.
+
+## 7. RÈGLES MÉTIER DU PROJET (RÈGLES 00 À 21)
+- Consulter systématiquement `REGLES/RULES_INDEX.md` pour les contraintes et codes d'erreurs associés.
+- Respecter scrupuleusement la Ground Truth (Règle 14) : aucune génération procédurale d'établissements fictifs.
