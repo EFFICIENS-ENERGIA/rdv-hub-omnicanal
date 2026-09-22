@@ -1,0 +1,38 @@
+﻿# Fichiers d'environnement et secrets sensibles
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+
+# Volumes de logs et de cache conteneurises
+docker/logs/*
+!docker/logs/.gitkeep
+*.log
+
+# Captures d'ecran lourdes generees par les bancs d'essai
+captures/*.png
+
+# Systemes et editeurs
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+.env*.local
+
+.next/
+
+node_modules/
+
+.github/
+
+*.exe
+
+*.msix
+
+*.iso
+
+*.fdmdownload
+
+*.zip

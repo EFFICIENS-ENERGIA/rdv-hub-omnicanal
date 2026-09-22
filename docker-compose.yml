@@ -1,0 +1,88 @@
+﻿# ==============================================================================
+# 🐳 RDV-HUB SAAS -- ORCHESTRATION DOCKER COMPOSE (PRODUCTION READY)
+# Architecture Multi-Conteneurs : Web App (Non-Root) + Nginx Reverse Proxy
+# ==============================================================================
+
+services:
+  # ----------------------------------------------------------------------------
+  # 1. CONTENEUR APPLICATION WEB (BACKEND / PWA STATIC SERVING)
+  # ----------------------------------------------------------------------------
+  rdv-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: rdv_hub_web_app
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - APP_ENV=${APP_ENV:-production}
+      - APP_NAME=${APP_NAME:-RDV-Hub Omnicanal SaaS}
+      - DEFAULT_GOOGLE_EMAIL=${DEFAULT_GOOGLE_EMAIL:-sebastien.pro@gmail.com}
+      - WAZE_BASE_URL=${WAZE_BASE_URL:-https://waze.com/ul}
+    # Volumes pour la persistance des donnees et imports clients
+    volumes:
+      - rdv_data:/usr/share/nginx/html/data:rw
+      - ./data:/usr/share/nginx/html/data:rw
+    networks:
+      - rdv-internal-network
+    # Le conteneur applicatif n'est pas expose sur l'hote (uniquement au reverse proxy)
+    expose:
+      - "8080"
+    # Verification automatique de sante du conteneur
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/healthz || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # ----------------------------------------------------------------------------
+  # 2. CONTENEUR REVERSE PROXY (PASSERELLE NGINX DURCIE & OWASP SECURITY)
+  # ----------------------------------------------------------------------------
+  rdv-proxy:
+    image: nginx:1.27-alpine
+    container_name: rdv_hub_reverse_proxy
+    restart: unless-stopped
+    # Port d'ecoute expose sur la machine hote (configurable via .env)
+    ports:
+      - "${HOST_PORT:-8092}:80"
+    # Demarrage ordonne apres validation de sante de l'application
+    depends_on:
+      rdv-app:
+        condition: service_healthy
+    # Montages de configuration et de persistance des logs Nginx
+    volumes:
+      - ./docker/proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/proxy/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - rdv_proxy_logs:/var/log/nginx:rw
+      - ./docker/logs:/var/log/nginx:rw
+    networks:
+      - rdv-internal-network
+    # Verification continue de l'etat du reverse proxy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:80/healthz || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+# ------------------------------------------------------------------------------
+# RESEAUX INTERNES ISOLES (DOCKER BRIDGE)
+# ------------------------------------------------------------------------------
+networks:
+  rdv-internal-network:
+    name: rdv_internal_net
+    driver: bridge
+
+# ------------------------------------------------------------------------------
+# VOLUMES PERSISTANTS GERE PAR DOCKER (DONNEES & JOURNAUX)
+# ------------------------------------------------------------------------------
+volumes:
+  rdv_data:
+    name: rdv_hub_data_volume
+    driver: local
+  rdv_proxy_logs:
+    name: rdv_hub_logs_volume
+    driver: local

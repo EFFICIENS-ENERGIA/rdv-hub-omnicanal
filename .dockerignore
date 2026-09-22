@@ -1,0 +1,26 @@
+﻿# Ignorer le versionnement et les logs
+.git
+.gitignore
+*.log
+*.tmp
+
+# Ignorer les captures d'ecran d'audit volumineuses
+captures/
+
+# Ignorer les scripts de developpement locaux Windows
+*.bat
+*.ps1
+
+# Ignorer les fichiers de secrets locaux
+.env
+.env.local
+.env.*.local
+
+# Fichiers de configuration IDE
+.vscode/
+.idea/
+
+# Fichiers de test / documentation intermediaire
+test_results.md
+implementation_plan.md
+walkthrough.md

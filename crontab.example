@@ -1,0 +1,13 @@
+# ==============================================================================
+# 💾 RDV-HUB SAAS -- EXEMPLE DE CONFIGURATION CRONTAB LINUX
+# Installer sur le serveur hôte avec la commande : crontab -e
+# ==============================================================================
+
+# 1. Sauvegarde quotidienne à 02:00 UTC (Export JSON + SQL + Compression + Envoi Distant S3/GCS)
+0 2 * * * /bin/bash /opt/rdv_hub_omnicanal/scripts/cron_backup.sh >> /opt/rdv_hub_omnicanal/docker/logs/cron.log 2>&1
+
+# 2. Sauvegarde de sécurité horaire pendant les heures de bureau (08:00 - 19:00 du Lundi au Vendredi)
+0 8-19 * * 1-5 /usr/bin/python3 /opt/rdv_hub_omnicanal/scripts/backup_data.py --cron >> /opt/rdv_hub_omnicanal/docker/logs/backup.log 2>&1
+
+# 3. Purge hebdomadaire des anciennes archives locales de plus de 30 jours (Chaque Dimanche à 03:00)
+0 3 * * 0 find /opt/rdv_hub_omnicanal/backups/ -type f -name "rdv_backup_*" -mtime +30 -delete

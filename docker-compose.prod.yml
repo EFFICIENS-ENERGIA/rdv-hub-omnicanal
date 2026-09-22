@@ -1,0 +1,78 @@
+﻿# ==============================================================================
+# 🐳 RDV-HUB SAAS -- DOCKER COMPOSE DE PRODUCTION (HTTPS & LET'S ENCRYPT AUTO)
+# ==============================================================================
+
+services:
+  # 1. APPLICATION WEB SAAS
+  rdv-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: rdv_hub_web_app_prod
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - APP_ENV=production
+    volumes:
+      - rdv_data:/usr/share/nginx/html/data:rw
+    networks:
+      - rdv-internal-network
+    expose:
+      - "8080"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/healthz || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # 2. REVERSE PROXY NGINX (HTTP -> HTTPS & CERTBOT INTEGRATION)
+  rdv-proxy:
+    image: nginx:1.27-alpine
+    container_name: rdv_hub_proxy_prod
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      rdv-app:
+        condition: service_healthy
+    volumes:
+      - ./docker/proxy/nginx.production.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/logs:/var/log/nginx:rw
+      - certbot_etc:/etc/letsencrypt:ro
+      - certbot_www:/var/www/certbot:ro
+    networks:
+      - rdv-internal-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:80/healthz || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # 3. CERTBOT LET'S ENCRYPT (RENOUVELLEMENT AUTOMATIQUE DU CERTIFICAT TOUTES LES 12H)
+  certbot:
+    image: certbot/certbot:latest
+    container_name: rdv_hub_certbot
+    restart: unless-stopped
+    volumes:
+      - certbot_etc:/etc/letsencrypt:rw
+      - certbot_www:/var/www/certbot:rw
+    # Tentative de renouvellement toutes les 12 heures et rechargement de Nginx
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+networks:
+  rdv-internal-network:
+    name: rdv_internal_net_prod
+    driver: bridge
+
+volumes:
+  rdv_data:
+    name: rdv_hub_data_volume_prod
+  certbot_etc:
+    name: rdv_hub_certbot_etc
+  certbot_www:
+    name: rdv_hub_certbot_www

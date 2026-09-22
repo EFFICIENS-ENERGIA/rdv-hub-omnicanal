@@ -1,0 +1,318 @@
+/* 🎨 RDV-HUB SAAS — DESIGN SYSTEM (INTERCOM & LINEAR INSPIRED) */
+
+:root {
+  /* Palette Mode Sombre (Défaut SaaS Pro) */
+  --bg-app: #0b0f19;
+  --bg-sidebar: #0f172a;
+  --bg-card: #131d31;
+  --bg-card-hover: #1e293b;
+  --bg-input: #1e293b;
+  --bg-modal: #111827;
+  --bg-accent-soft: rgba(99, 102, 241, 0.12);
+  
+  --border-subtle: #1f293d;
+  --border-focus: #6366f1;
+  --border-light: rgba(255, 255, 255, 0.08);
+
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-on-accent: #ffffff;
+
+  /* Accents & Statuts */
+  --accent-primary: #6366f1;
+  --accent-primary-hover: #4f46e5;
+  --accent-gradient: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%);
+  --accent-ai: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+  
+  --status-emerald: #10b981;
+  --status-emerald-bg: rgba(16, 185, 129, 0.12);
+  --status-amber: #f59e0b;
+  --status-amber-bg: rgba(245, 158, 11, 0.12);
+  --status-blue: #38bdf8;
+  --status-blue-bg: rgba(56, 189, 248, 0.12);
+  --status-rose: #f43f5e;
+  --status-rose-bg: rgba(244, 63, 94, 0.12);
+  --status-purple: #c084fc;
+  --status-purple-bg: rgba(192, 132, 252, 0.12);
+
+  /* Omnicanal Sources */
+  --ch-web: #3b82f6;
+  --ch-email: #8b5cf6;
+  --ch-phone: #10b981;
+  --ch-whatsapp: #22c55e;
+  --ch-ads: #f59e0b;
+  --ch-referral: #ec4899;
+  --ch-file: #64748b;
+
+  /* Dimensions & Spacings */
+  --sidebar-w: 260px;
+  --header-h: 68px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-pill: 9999px;
+  
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 4px 12px 0 rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 12px 32px -4px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.3);
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="light"] {
+  --bg-app: #f8fafc;
+  --bg-sidebar: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f1f5f9;
+  --bg-input: #f8fafc;
+  --bg-modal: #ffffff;
+  --bg-accent-soft: rgba(99, 102, 241, 0.08);
+
+  --border-subtle: #e2e8f0;
+  --border-focus: #4f46e5;
+  --border-light: rgba(0, 0, 0, 0.06);
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --text-on-accent: #ffffff;
+
+  --accent-primary: #4f46e5;
+  --accent-primary-hover: #4338ca;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px 0 rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 12px 32px -4px rgba(0, 0, 0, 0.12);
+  --shadow-glow: 0 0 15px rgba(99, 102, 241, 0.2);
+}
+
+/* Reset Global & Typo */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  background-color: var(--bg-app);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+/* Boutons SaaS */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  padding: 0.55rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.btn-primary {
+  background: var(--accent-primary);
+  color: var(--text-on-accent);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.35);
+}
+
+.btn-primary:hover {
+  background: var(--accent-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-glow);
+}
+
+.btn-secondary {
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+
+.btn-secondary:hover {
+  background: var(--border-subtle);
+  border-color: var(--text-muted);
+}
+
+.btn-ai {
+  background: var(--accent-ai);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(168, 85, 247, 0.4);
+}
+
+.btn-ai:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.btn-danger {
+  background: var(--status-rose-bg);
+  color: var(--status-rose);
+  border-color: rgba(244, 63, 94, 0.3);
+}
+
+.btn-danger:hover {
+  background: var(--status-rose);
+  color: #ffffff;
+}
+
+.btn-pill {
+  border-radius: var(--radius-pill);
+  padding: 0.35rem 0.85rem;
+  font-size: 0.8rem;
+}
+
+.btn-icon {
+  padding: 0.5rem;
+  border-radius: var(--radius-md);
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-secondary);
+}
+
+.btn-icon:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+
+/* Badges de Statut & Canaux */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+}
+
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.badge-new { background: var(--status-blue-bg); color: var(--status-blue); }
+.badge-new .badge-dot { background: var(--status-blue); }
+
+.badge-confirmed { background: var(--status-purple-bg); color: var(--status-purple); }
+.badge-confirmed .badge-dot { background: var(--status-purple); }
+
+.badge-done { background: var(--status-emerald-bg); color: var(--status-emerald); }
+.badge-done .badge-dot { background: var(--status-emerald); }
+
+.badge-pending { background: var(--status-amber-bg); color: var(--status-amber); }
+.badge-pending .badge-dot { background: var(--status-amber); }
+
+.badge-cancelled { background: var(--status-rose-bg); color: var(--status-rose); }
+.badge-cancelled .badge-dot { background: var(--status-rose); }
+
+/* Badges Canaux */
+.badge-channel {
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+.badge-channel[data-channel="web"] { border-color: var(--ch-web); color: var(--ch-web); }
+.badge-channel[data-channel="email"] { border-color: var(--ch-email); color: var(--ch-email); }
+.badge-channel[data-channel="phone"] { border-color: var(--ch-phone); color: var(--ch-phone); }
+.badge-channel[data-channel="whatsapp"] { border-color: var(--ch-whatsapp); color: var(--ch-whatsapp); }
+.badge-channel[data-channel="ads"] { border-color: var(--ch-ads); color: var(--ch-ads); }
+.badge-channel[data-channel="referral"] { border-color: var(--ch-referral); color: var(--ch-referral); }
+.badge-channel[data-channel="file"] { border-color: var(--ch-file); color: var(--ch-file); }
+
+/* Formulaires & Champs */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.6rem 0.85rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  transition: var(--transition);
+  font-size: 0.875rem;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* Animations */
+@keyframes pulseGlow {
+  0% { transform: scale(0.95); opacity: 0.7; }
+  50% { transform: scale(1.08); opacity: 1; filter: drop-shadow(0 0 8px #6366f1); }
+  100% { transform: scale(0.95); opacity: 0.7; }
+}
+
+.pulse-ai {
+  animation: pulseGlow 2.4s infinite ease-in-out;
+}
+
+/* Scrollbar épurée */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: var(--radius-pill);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}

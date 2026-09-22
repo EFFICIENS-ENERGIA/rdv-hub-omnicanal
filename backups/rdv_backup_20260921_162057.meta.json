@@ -1,0 +1,40 @@
+{
+  "archive": {
+    "format": "gzip",
+    "archive_path": "C:\\Users\\EFFICIENS ENERGIA\\Desktop\\ANTIGRAVITY\\projects\\rdv_hub_omnicanal\\backups\\rdv_backup_20260921_162057.tar.gz",
+    "size_bytes": 1998,
+    "size_kb": 1.95,
+    "sha256": "285887c642f7c3bfb22d2ce592bdc5ca33848779c0ae2dc536c1f92d15b3db0f"
+  },
+  "timestamp": "2026-09-21T14:20:57Z",
+  "remote_storage": {
+    "details": "Sauvegarde r\u00e9pliqu\u00e9e dans le coffre-fort distant local (remote_vault)",
+    "remote_uri": "file://C:/Users/EFFICIENS ENERGIA/Desktop/ANTIGRAVITY/projects/rdv_hub_omnicanal/backups/remote_vault/rdv_backup_20260921_162057.tar.gz",
+    "status": "SUCCESS",
+    "provider": "local"
+  },
+  "records_count": 3,
+  "backup_id": "rdv_backup_20260921_162057",
+  "financial_metrics": {
+    "channel_distribution": {
+      "whatsapp": 1,
+      "email": 1,
+      "web": 1
+    },
+    "ca_realise": 0,
+    "average_ticket": 248333.33,
+    "status_distribution": {
+      "new": 1,
+      "pending": 1,
+      "confirmed": 1
+    },
+    "total_appointments": 3,
+    "ca_previsionnel": 745000.0,
+    "show_up_rate_percent": 100.0,
+    "channel_revenue": {
+      "whatsapp": 420000.0,
+      "email": 45000.0,
+      "web": 280000.0
+    }
+  }
+}

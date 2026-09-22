@@ -1,0 +1,36 @@
+{
+  "version": "1.0.0",
+  "monitoring_compatible": [
+    "UptimeRobot",
+    "Datadog",
+    "Prometheus",
+    "StatusCake"
+  ],
+  "uptime_seconds": 0.2,
+  "environment": "production",
+  "timestamp": "2026-09-21T14:07:45Z",
+  "status": "healthy",
+  "checks": {
+    "memory": {
+      "used_mb": 20.26,
+      "threshold_alarm_percent": 90.0,
+      "status": "healthy",
+      "percent": 4.0,
+      "limit_mb": 512.0
+    },
+    "database_storage": {
+      "latency_ms": 4.0,
+      "message": "Stockage persistant accessible en lecture et ecriture",
+      "status": "up",
+      "records_loaded": 3,
+      "storage_type": "local_persistent_volume"
+    },
+    "calendar_engine": {
+      "message": "Moteur d exclusion d agenda deterministe operationnel",
+      "status": "operational",
+      "calc_time_us": 0.0,
+      "algorithm": "interval_collision_check"
+    }
+  },
+  "service": "rdv-hub-saas"
+}

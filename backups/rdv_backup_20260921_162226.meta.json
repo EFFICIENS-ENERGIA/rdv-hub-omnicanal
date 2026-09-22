@@ -1,0 +1,40 @@
+{
+  "timestamp": "2026-09-21T14:22:26Z",
+  "financial_metrics": {
+    "show_up_rate_percent": 100.0,
+    "total_appointments": 3,
+    "ca_realise": 0,
+    "status_distribution": {
+      "confirmed": 1,
+      "new": 1,
+      "pending": 1
+    },
+    "channel_distribution": {
+      "whatsapp": 1,
+      "web": 1,
+      "email": 1
+    },
+    "average_ticket": 248333.33,
+    "ca_previsionnel": 745000.0,
+    "channel_revenue": {
+      "whatsapp": 420000.0,
+      "web": 280000.0,
+      "email": 45000.0
+    }
+  },
+  "remote_storage": {
+    "provider": "local",
+    "remote_uri": "file://./backups/remote_vault/rdv_backup_20260921_162226.tar.gz",
+    "details": "Sauvegarde r\u00e9pliqu\u00e9e dans le coffre-fort distant local (remote_vault)",
+    "status": "SUCCESS"
+  },
+  "archive": {
+    "format": "gzip",
+    "archive_path": "./backups\\rdv_backup_20260921_162226.tar.gz",
+    "size_bytes": 2004,
+    "size_kb": 1.96,
+    "sha256": "a6b90fd6b3032abffd45f904805dfdee54a24256cedb0c31bb9e7344661f11d2"
+  },
+  "records_count": 3,
+  "backup_id": "rdv_backup_20260921_162226"
+}

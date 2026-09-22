@@ -1,0 +1,40 @@
+{
+  "remote_storage": {
+    "provider": "s3",
+    "status": "SUCCESS",
+    "details": "Archiv\u00e9 sur S3 (eu-west-3) avec v\u00e9rification SHA-256",
+    "remote_uri": "s3://rdv-hub-backups-vault/backups/rdv_backup_20260921_162129.tar.gz"
+  },
+  "timestamp": "2026-09-21T14:21:29Z",
+  "archive": {
+    "archive_path": "C:\\Users\\EFFICIENS ENERGIA\\Desktop\\ANTIGRAVITY\\projects\\rdv_hub_omnicanal\\backups\\rdv_backup_20260921_162129.tar.gz",
+    "size_bytes": 2004,
+    "format": "gzip",
+    "sha256": "ddf7938cbecba0cd011617613b0bd4557ede8937eca1b77c32ddcaea526e1140",
+    "size_kb": 1.96
+  },
+  "backup_id": "rdv_backup_20260921_162129",
+  "financial_metrics": {
+    "channel_distribution": {
+      "whatsapp": 1,
+      "email": 1,
+      "web": 1
+    },
+    "average_ticket": 248333.33,
+    "total_appointments": 3,
+    "ca_realise": 0,
+    "status_distribution": {
+      "confirmed": 1,
+      "new": 1,
+      "pending": 1
+    },
+    "show_up_rate_percent": 100.0,
+    "channel_revenue": {
+      "whatsapp": 420000.0,
+      "email": 45000.0,
+      "web": 280000.0
+    },
+    "ca_previsionnel": 745000.0
+  },
+  "records_count": 3
+}

@@ -1,0 +1,47 @@
+[
+  {
+    "clientName": "Groupe Tertiaire Méditerranée",
+    "email": "contact@tertiaire-med.fr",
+    "phone": "+33 4 91 00 22 33",
+    "channel": "web",
+    "subject": "Réhabilitation Immeuble de Bureaux 3500m²",
+    "address": "25 Quai d'Arenc, 13002 Marseille",
+    "date": "2026-09-25",
+    "startTime": "09:30",
+    "endTime": "11:00",
+    "amount": 280000,
+    "status": "confirmed",
+    "notes": "Dossier d'appel d'offres privé. Consultation restreinte.",
+    "leadScore": 96
+  },
+  {
+    "clientName": "SCI Les Oliviers",
+    "email": "gestion@sci-oliviers.com",
+    "phone": "+33 6 19 28 37 46",
+    "channel": "whatsapp",
+    "subject": "Construction 4 Villas Jumelées RT2020",
+    "address": "40 Route de Puyricard, 13100 Aix-en-Provence",
+    "date": "2026-09-26",
+    "startTime": "14:00",
+    "endTime": "15:30",
+    "amount": 420000,
+    "status": "new",
+    "notes": "Contact direct via WhatsApp. Terrain acquis à Aix-en-Provence.",
+    "leadScore": 92
+  },
+  {
+    "clientName": "Cabinet Avocats & Associés",
+    "email": "direction@avocats-associes.fr",
+    "phone": "+33 1 45 67 89 00",
+    "channel": "email",
+    "subject": "Agencement Haut de Gamme & Isolation Phonique",
+    "address": "8 Place de la Concorde, 75008 Paris",
+    "date": "2026-09-28",
+    "startTime": "10:30",
+    "endTime": "11:30",
+    "amount": 45000,
+    "status": "pending",
+    "notes": "Email avec cahier des charges acoustique strict.",
+    "leadScore": 84
+  }
+]

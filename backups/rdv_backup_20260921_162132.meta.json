@@ -1,0 +1,40 @@
+{
+  "backup_id": "rdv_backup_20260921_162132",
+  "remote_storage": {
+    "status": "SUCCESS",
+    "details": "Archiv\u00e9 sur Google Cloud Storage (GCS Multi-Region) avec contr\u00f4le d'int\u00e9grit\u00e9",
+    "remote_uri": "gs://rdv-hub-gcs-vault/rdv_hub_backups/rdv_backup_20260921_162132.tar.gz",
+    "provider": "gcs"
+  },
+  "financial_metrics": {
+    "ca_realise": 0,
+    "ca_previsionnel": 745000.0,
+    "show_up_rate_percent": 100.0,
+    "status_distribution": {
+      "confirmed": 1,
+      "new": 1,
+      "pending": 1
+    },
+    "total_appointments": 3,
+    "average_ticket": 248333.33,
+    "channel_revenue": {
+      "whatsapp": 420000.0,
+      "web": 280000.0,
+      "email": 45000.0
+    },
+    "channel_distribution": {
+      "whatsapp": 1,
+      "web": 1,
+      "email": 1
+    }
+  },
+  "archive": {
+    "sha256": "0e5aa4e338e1604e7e447923289f5f95f194e25395cd1da90b63e742f1b12bfa",
+    "format": "gzip",
+    "archive_path": "C:\\Users\\EFFICIENS ENERGIA\\Desktop\\ANTIGRAVITY\\projects\\rdv_hub_omnicanal\\backups\\rdv_backup_20260921_162132.tar.gz",
+    "size_bytes": 2009,
+    "size_kb": 1.96
+  },
+  "timestamp": "2026-09-21T14:21:32Z",
+  "records_count": 3
+}

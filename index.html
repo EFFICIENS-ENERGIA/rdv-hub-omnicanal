@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RDV-Hub Omnicanal SaaS — Centralisation & IA Copilot des Rendez-vous Clients</title>
+  <meta name="description" content="Plateforme SaaS unifiée de centralisation et gestion omnicanale des rendez-vous clients (Web, Email, Téléphone, WhatsApp, Fichiers) avec copilote IA et télémétrie financière.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0b0f19">
+  <link rel="icon" type="image/svg+xml" href="assets/icon-192.svg">
+  
+  <!-- Sécurité OWASP & Feuilles de style -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <link rel="stylesheet" href="css/design_system.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- 1. Sidebar Navigation (Intercom & Linear inspired) -->
+    <aside class="sidebar" role="navigation" aria-label="Navigation principale">
+      <div class="sidebar-header">
+        <div class="brand-icon">RH</div>
+        <div class="brand-info">
+          <h1>RDV · <strong>HUB</strong></h1>
+          <span>CENTRALISATION SAAS</span>
+        </div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">PILOTAGE DES RENDEZ-VOUS</div>
+        <div class="nav-item active" data-view="kanban">
+          <div class="nav-item-left">
+            <span class="nav-item-icon">📋</span>
+            <span>Pipeline Kanban</span>
+          </div>
+          <span class="nav-counter" id="navCountKanban">0</span>
+        </div>
+        <div class="nav-item" data-view="calendar">
+          <div class="nav-item-left">
+            <span class="nav-item-icon">📅</span>
+            <span>Agenda & Conflits</span>
+          </div>
+        </div>
+        <div class="nav-item" data-view="table">
+          <div class="nav-item-left">
+            <span class="nav-item-icon">📑</span>
+            <span>Table Dynamique</span>
+          </div>
+        </div>
+
+        <div class="nav-label" style="margin-top: 1rem;">INTELLIGENCE & REVENUS</div>
+        <div class="nav-item" data-view="ai">
+          <div class="nav-item-left">
+            <span class="nav-item-icon">🤖</span>
+            <span>Copilote IA (Fin AI)</span>
+          </div>
+          <span class="badge badge-channel" style="background: var(--accent-ai); color: #fff; font-size: 0.65rem;">PRO</span>
+        </div>
+        <div class="nav-item" data-view="analytics">
+          <div class="nav-item-left">
+            <span class="nav-item-icon">📈</span>
+            <span>Télémétrie & Finances</span>
+          </div>
+        </div>
+        <div class="nav-item" data-view="import">
+          <div class="nav-item-left">
+            <span class="nav-item-icon">📥</span>
+            <span>Imports & Exports</span>
+          </div>
+        </div>
+        <div class="nav-item" data-view="google">
+          <div class="nav-item-left">
+            <span class="nav-item-icon">🇬</span>
+            <span>Google Agenda & Gmail</span>
+          </div>
+          <span class="badge badge-google" style="font-size: 0.65rem;">SYNCHRO</span>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <a href="data/health.json" target="_blank" rel="noopener noreferrer" class="status-indicator" title="Consulter le rapport de santé temps réel (Monitoring 200 OK)" style="text-decoration: none; color: inherit; cursor: pointer;">
+          <span class="status-dot-live"></span>
+          <span>Santé : 100% Healthy</span>
+        </a>
+        <button class="btn btn-secondary btn-pill" id="themeToggleBtn" style="padding: 0.25rem 0.6rem; font-size: 0.72rem;">☀️ Mode</button>
+      </div>
+    </aside>
+
+    <!-- 2. Main Content Area -->
+    <main class="main-wrapper" role="main">
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="header-search">
+          <span style="color: var(--text-muted);">🔍</span>
+          <input type="text" id="globalSearchInput" placeholder="Rechercher client, email, objet, téléphone... (Temps réel)" autocomplete="off">
+        </div>
+
+        <div class="header-actions">
+          <button class="btn btn-secondary btn-pill" id="userProfileBtn" title="Compte Utilisateur Supabase & Session" style="font-size: 0.75rem;">
+            <span id="authBtnIcon">👤</span> <span id="userProfileBadge">Mode Invité / Hors-ligne</span>
+          </button>
+          <span id="syncStatusBadge" class="status-badge badge-online" style="cursor: pointer; font-size: 0.75rem; padding: 0.35rem 0.75rem; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.1); display: inline-flex; align-items: center; gap: 0.45rem; background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(8px);" title="Base Cloud Supabase & SQLite synchronisées">
+            <span class="pulse-dot green"></span> ☁️ <strong>Supabase</strong> : Synchronisé
+          </span>
+          <a href="data/health.json" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-pill" id="btnSystemHealth" title="État de santé temps réel UptimeRobot (/api/health)" style="font-size: 0.75rem; text-decoration: none;">
+            🩺 <span id="systemHealthStatusText" style="color: var(--status-emerald); font-weight: 700;">200 OK</span>
+          </a>
+          <button class="btn btn-google btn-pill" id="googleAccountBtn" title="Compte Google & Synchronisation">
+            <span>🇬</span> <span id="googleAccountBadge">Google : seb@gmail.com</span>
+          </button>
+          <button class="btn btn-ai" id="btnQuickAdd" style="font-size: 0.82rem;">⚡ Action Rapide</button>
+          <button class="btn btn-primary" id="btnNewRdv">➕ Nouveau RDV</button>
+        </div>
+      </header>
+
+      <!-- Content Area -->
+      <div class="content-area">
+        
+        <!-- KPI Cards Grid (Zéro Défaut de Calcul) -->
+        <section class="kpi-grid" aria-label="Indicateurs clés de performance">
+          <div class="kpi-card">
+            <div class="kpi-card-header">
+              <span>TOTAL RENDEZ-VOUS</span>
+              <div class="kpi-card-icon" style="background: var(--status-blue-bg); color: var(--status-blue);">📅</div>
+            </div>
+            <div class="kpi-card-value" id="kpiTotalRdv">0</div>
+            <div class="kpi-card-footer">
+              <span class="trend-neutral">Toutes provenances confondues</span>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-card-header">
+              <span>CA PRÉVISIONNEL</span>
+              <div class="kpi-card-icon" style="background: var(--status-purple-bg); color: var(--status-purple);">💶</div>
+            </div>
+            <div class="kpi-card-value" id="kpiCaPrevisionnel">0 €</div>
+            <div class="kpi-card-footer">
+              <span class="trend-up">↗ Pipeline actif</span>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-card-header">
+              <span>CA RÉALISÉ / GAGNÉ</span>
+              <div class="kpi-card-icon" style="background: var(--status-emerald-bg); color: var(--status-emerald);">🏆</div>
+            </div>
+            <div class="kpi-card-value" id="kpiCaRealise">0 €</div>
+            <div class="kpi-card-footer">
+              <span class="trend-up" id="kpiConversionRate">0.0%</span>
+              <span style="color: var(--text-muted); font-size: 0.72rem;">taux de conversion</span>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-card-header">
+              <span>SHOW-UP RATE</span>
+              <div class="kpi-card-icon" style="background: var(--status-amber-bg); color: var(--status-amber);">🎯</div>
+            </div>
+            <div class="kpi-card-value" id="kpiShowUpRate">100.0%</div>
+            <div class="kpi-card-footer">
+              <span style="color: var(--text-muted); font-size: 0.72rem;">Taux de présence client</span>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-card-header">
+              <span>PANIER MOYEN</span>
+              <div class="kpi-card-icon" style="background: var(--bg-accent-soft); color: var(--accent-primary);">💎</div>
+            </div>
+            <div class="kpi-card-value" id="kpiPanierMoyen">0 €</div>
+            <div class="kpi-card-footer">
+              <span style="color: var(--text-muted); font-size: 0.72rem;">Moyenne par opportunité</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- View Control Bar & Filters -->
+        <div class="view-control-bar">
+          <div class="tabs-group">
+            <button class="tab-btn active" data-view="kanban">📋 Pipeline Kanban</button>
+            <button class="tab-btn" data-view="calendar">📅 Agenda interactif</button>
+            <button class="tab-btn" data-view="table">📑 Table détaillée</button>
+            <button class="tab-btn" data-view="ai">🤖 Fin AI Copilote</button>
+            <button class="tab-btn" data-view="analytics">📊 Finances & Graphes</button>
+            <button class="tab-btn" data-view="import">📥 Imports / Exports</button>
+            <button class="tab-btn" data-view="google">🇬 Google Agenda</button>
+          </div>
+
+          <div class="filters-group">
+            <select class="filter-select" id="channelFilterSelect" aria-label="Filtrer par canal">
+              <option value="all">Tous les canaux (Omnicanal)</option>
+              <option value="web">🌐 Site Web</option>
+              <option value="whatsapp">💬 WhatsApp</option>
+              <option value="email">✉️ Email entrant</option>
+              <option value="phone">📞 Téléphone</option>
+              <option value="ads">🎯 Campagnes Pub</option>
+              <option value="referral">🤝 Recommandation</option>
+              <option value="file">📁 Import Fichier</option>
+            </select>
+
+            <select class="filter-select" id="statusFilterSelect" aria-label="Filtrer par statut">
+              <option value="all">Tous les statuts</option>
+              <option value="new">Nouveau / À qualifier</option>
+              <option value="confirmed">Confirmé</option>
+              <option value="pending">En attente</option>
+              <option value="done">Honoré / Gagné</option>
+              <option value="cancelled">Annulé / Perdu</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 3.1 Vue Pipeline Kanban -->
+        <div id="kanbanView">
+          <div class="kanban-board">
+            <!-- Colonne 1: Nouveau -->
+            <div class="kanban-col">
+              <div class="kanban-col-header">
+                <span class="kanban-col-title">
+                  <span class="badge-dot" style="background: var(--status-blue);"></span>
+                  <span>Nouveaux / À qualifier</span>
+                </span>
+                <span class="badge badge-new" id="countBadge_new">0</span>
+              </div>
+              <div class="kanban-cards-list" id="colNew"></div>
+            </div>
+
+            <!-- Colonne 2: Confirmé -->
+            <div class="kanban-col">
+              <div class="kanban-col-header">
+                <span class="kanban-col-title">
+                  <span class="badge-dot" style="background: var(--status-purple);"></span>
+                  <span>Confirmés</span>
+                </span>
+                <span class="badge badge-confirmed" id="countBadge_confirmed">0</span>
+              </div>
+              <div class="kanban-cards-list" id="colConfirmed"></div>
+            </div>
+
+            <!-- Colonne 3: En attente -->
+            <div class="kanban-col">
+              <div class="kanban-col-header">
+                <span class="kanban-col-title">
+                  <span class="badge-dot" style="background: var(--status-amber);"></span>
+                  <span>En attente de réalisation</span>
+                </span>
+                <span class="badge badge-pending" id="countBadge_pending">0</span>
+              </div>
+              <div class="kanban-cards-list" id="colPending"></div>
+            </div>
+
+            <!-- Colonne 4: Honoré / Gagné -->
+            <div class="kanban-col">
+              <div class="kanban-col-header">
+                <span class="kanban-col-title">
+                  <span class="badge-dot" style="background: var(--status-emerald);"></span>
+                  <span>Honorés / Gagnés</span>
+                </span>
+                <span class="badge badge-done" id="countBadge_done">0</span>
+              </div>
+              <div class="kanban-cards-list" id="colDone"></div>
+            </div>
+
+            <!-- Colonne 5: Annulé -->
+            <div class="kanban-col">
+              <div class="kanban-col-header">
+                <span class="kanban-col-title">
+                  <span class="badge-dot" style="background: var(--status-rose);"></span>
+                  <span>Annulés / Perdus</span>
+                </span>
+                <span class="badge badge-cancelled" id="countBadge_cancelled">0</span>
+              </div>
+              <div class="kanban-cards-list" id="colCancelled"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3.2 Vue Calendrier & Conflits -->
+        <div id="calendarView" style="display: none;">
+          <div class="calendar-wrapper">
+            <div class="calendar-header">
+              <div>
+                <h3 style="font-size: 1.1rem; font-weight: 700;">Planning Temporel & Détection de Conflits</h3>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Visualisation sur 14 jours. Les conflits horaires sont automatiquement mis en surbrillance rouge.</p>
+              </div>
+            </div>
+            <div class="calendar-grid" id="calendarDaysGrid"></div>
+          </div>
+        </div>
+
+        <!-- 3.3 Vue Table Détaillée -->
+        <div id="tableView" style="display: none;">
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Client</th>
+                  <th>Canal</th>
+                  <th>Objet du RDV</th>
+                  <th>Date & Créneau</th>
+                  <th>Montant Prévisionnel</th>
+                  <th>Statut</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="appointmentsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 3.4 Vue Fin AI Copilot (Intercom Style) -->
+        <div id="aiView" style="display: none;">
+          <div class="ai-copilot-panel">
+            <div class="ai-copilot-header">
+              <div>
+                <span class="ai-pill-badge">✨ FIN AI AGENT QUALIFIER</span>
+                <h2 style="font-size: 1.25rem; font-weight: 700; margin-top: 0.4rem;">Analyse et Ingestion Intelligente de Demandes Clients</h2>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Collez ici un email reçu, un message WhatsApp, une retranscription d'appel ou une demande de formulaire. L'IA extrait automatiquement l'urgence, le budget, calcule le lead score et réserve le créneau idéal sans collision.</p>
+              </div>
+            </div>
+
+            <div class="ai-input-area">
+              <textarea class="form-control" id="aiInquiryInput" rows="4" placeholder="Exemple : Bonjour, je cherche en urgence un maître d'œuvre pour réhabiliter un bâtiment tertiaire de 1200m² à Lyon. Budget estimé 180k€. Pouvons-nous caler un échange cette semaine ? Mon numéro : 06 12 34 56 78 - Marc"></textarea>
+              <button class="btn btn-ai" id="btnAnalyzeAI" style="align-self: flex-start; padding: 0.85rem 1.5rem;">
+                Analyser & Qualifier →
+              </button>
+            </div>
+
+            <!-- Résultat de l'analyse -->
+            <div id="aiResultsContainer" style="display: none; margin-top: 1.5rem;" data-suggested="">
+              <div class="ai-results-card">
+                <div>
+                  <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Lead Score</div>
+                  <div style="font-size: 1.6rem; font-weight: 800; color: var(--accent-primary);" id="aiScoreValue">--</div>
+                </div>
+                <div>
+                  <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Niveau d'Urgence</div>
+                  <div style="font-size: 1.2rem; font-weight: 700; color: var(--status-amber);" id="aiUrgencyValue">--</div>
+                </div>
+                <div>
+                  <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Budget Estimé</div>
+                  <div style="font-size: 1.2rem; font-weight: 700; color: var(--status-emerald);" id="aiBudgetValue">--</div>
+                </div>
+                <div>
+                  <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;">Créneau Optimal Suggéré</div>
+                  <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-primary);" id="aiSlotValue">--</div>
+                </div>
+              </div>
+
+              <div style="margin-top: 1rem; padding: 0.85rem; background: var(--bg-card-hover); border-radius: var(--radius-md);">
+                <div style="font-size: 0.78rem; font-weight: 600; margin-bottom: 0.4rem;">Entités & Coordonnées Détectées :</div>
+                <ul id="aiEntitiesList" style="padding-left: 1.2rem; font-size: 0.8rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.2rem;"></ul>
+              </div>
+
+              <div style="margin-top: 1.25rem; display: flex; justify-content: flex-end;">
+                <button class="btn btn-primary" id="btnApplyAiSlot">
+                  📥 Créer le Rendez-vous avec ces paramètres
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3.5 Vue Finances & Graphes SVG -->
+        <div id="analyticsView" style="display: none;">
+          <div class="analytics-grid">
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div>
+                  <h3 style="font-size: 1rem; font-weight: 700;">Répartition du Chiffre d'Affaires par Statut</h3>
+                  <p style="font-size: 0.75rem; color: var(--text-muted);">Montants cumulés (€) pour chaque étape du cycle de vente</p>
+                </div>
+              </div>
+              <div class="svg-chart-container" id="revenueChartContainer"></div>
+            </div>
+
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div>
+                  <h3 style="font-size: 1rem; font-weight: 700;">Volume Omnicanal (Donut SVG)</h3>
+                  <p style="font-size: 0.75rem; color: var(--text-muted);">Part de marché par provenance client</p>
+                </div>
+              </div>
+              <div class="svg-chart-container" id="channelChartContainer"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3.6 Vue Imports / Exports -->
+        <div id="importView" style="display: none;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            <!-- Zone Import -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div>
+                  <h3 style="font-size: 1rem; font-weight: 700;">Import Massif de Données (CSV / Excel / JSON)</h3>
+                  <p style="font-size: 0.78rem; color: var(--text-muted);">Déposez votre fichier pour importer et mapper instantanément vos prospects.</p>
+                </div>
+              </div>
+              <div id="fileDropArea" style="border: 2px dashed var(--border-subtle); border-radius: var(--radius-md); padding: 3rem 1.5rem; text-align: center; cursor: pointer; transition: var(--transition);">
+                <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">📁</div>
+                <div style="font-weight: 600; margin-bottom: 0.25rem;">Glissez votre fichier CSV ou JSON ici</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">ou cliquez pour parcourir vos dossiers</div>
+                <input type="file" id="csvFileInput" accept=".csv,.json" style="display: none;">
+              </div>
+            </div>
+
+            <!-- Zone Export -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <div>
+                  <h3 style="font-size: 1rem; font-weight: 700;">Exportation & Reporting Exécutif</h3>
+                  <p style="font-size: 0.78rem; color: var(--text-muted);">Téléchargez la base complète ou générez un rapport PDF prêt à imprimer.</p>
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 1rem; padding: 1.5rem 0;">
+                <button class="btn btn-secondary" id="btnExportCsv" style="padding: 1rem; font-size: 0.95rem;">
+                  📊 Télécharger l'export complet (Format CSV / Excel)
+                </button>
+                <button class="btn btn-secondary" id="btnExportPdf" style="padding: 1rem; font-size: 0.95rem;">
+                  🖨️ Générer le compte-rendu imprimable (PDF / Impression)
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3.7 Vue Synchronisation Google Agenda & Gmail -->
+        <div id="googleView" style="display: none;">
+          <div class="google-sync-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(66, 133, 244, 0.15); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                  🇬
+                </div>
+                <div>
+                  <h2 style="font-size: 1.25rem; font-weight: 700;">Synchronisation Google Agenda & Compte Gmail</h2>
+                  <p style="font-size: 0.85rem; color: var(--text-muted);">Vos rendez-vous sont directement connectés à votre agenda Google et à votre boîte Gmail en 1-clic.</p>
+                </div>
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <a href="https://calendar.google.com" target="_blank" rel="noopener noreferrer" class="btn btn-google">
+                  📅 Ouvrir Google Agenda Web ↗
+                </a>
+                <a href="https://mail.google.com" target="_blank" rel="noopener noreferrer" class="btn btn-gmail">
+                  ✉️ Ouvrir Gmail ↗
+                </a>
+              </div>
+            </div>
+
+            <!-- Configuration du compte Google -->
+            <div style="background: var(--bg-app); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.5rem;">
+              <h3 style="font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem;">Compte Google Associé</h3>
+              <div style="display: flex; gap: 0.75rem; max-width: 540px;">
+                <input type="email" class="form-control" id="googleEmailInput" placeholder="Entrez votre adresse Gmail / Google Workspace" value="sebastien.pro@gmail.com">
+                <button class="btn btn-primary" id="btnSaveGoogleEmail">Enregistrer</button>
+              </div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.4rem;">
+                Ce compte sera utilisé pour pré-remplir vos invitations clients et expédier vos confirmations de rendez-vous.
+              </div>
+            </div>
+
+            <!-- Actions Rapides Google -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+              <div style="background: var(--bg-app); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem;">
+                <h4 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.35rem;">📅 Exporter vers Google Agenda</h4>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">Génère un fichier de synchronisation universel prêt à être importé dans votre Google Agenda.</p>
+                <button class="btn btn-google" id="btnExportGoogleIcs" style="width: 100%;">
+                  📥 Télécharger le planning (.ics Google Calendar)
+                </button>
+              </div>
+
+              <div style="background: var(--bg-app); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem;">
+                <h4 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.35rem;">⚡ Ingestion 1-Clic de chaque RDV</h4>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">Chaque fiche de rendez-vous dans le Pipeline Kanban possède désormais un bouton direct <strong>Google Agenda</strong> et <strong>Gmail</strong>.</p>
+                <button class="btn btn-secondary" id="btnTestGoogleLink" style="width: 100%;">
+                  🔗 Tester un lien Google Agenda sur le prochain RDV
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- 4. Modale Création / Édition de Rendez-vous -->
+  <div class="modal-backdrop" id="rdvModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle" style="font-size: 1.1rem; font-weight: 700;">Nouveau Rendez-vous Client</h3>
+        <button type="button" class="btn-icon" id="closeModalBtn" aria-label="Fermer la modale">✕</button>
+      </div>
+      <form id="rdvForm">
+        <div class="modal-body">
+          <!-- Alerte Conflit dynamique -->
+          <div id="conflictAlert" style="display: none; padding: 0.75rem; background: var(--status-rose-bg); border: 1px solid var(--status-rose); border-radius: var(--radius-md); color: var(--status-rose); font-size: 0.8rem; margin-bottom: 1rem;">
+            ⚠️ <strong>Attention : Conflit d'agenda détecté !</strong> Un autre rendez-vous est déjà positionné sur ce même créneau horaire.
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="rdvClientName">Nom du Client / Entreprise *</label>
+              <input type="text" class="form-control" id="rdvClientName" required placeholder="Ex: Cabinet Horizon">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="rdvChannel">Provenance / Canal *</label>
+              <select class="form-control" id="rdvChannel" required>
+                <option value="web">🌐 Site Web / Formulaire</option>
+                <option value="whatsapp">💬 WhatsApp</option>
+                <option value="email">✉️ Email entrant</option>
+                <option value="phone">📞 Appel téléphonique</option>
+                <option value="ads">🎯 Campagne Pub (Ads)</option>
+                <option value="referral">🤝 Recommandation</option>
+                <option value="file">📁 Import de fichier</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="rdvEmail">Adresse Email</label>
+              <input type="email" class="form-control" id="rdvEmail" placeholder="contact@client.fr">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="rdvPhone">Téléphone</label>
+              <input type="tel" class="form-control" id="rdvPhone" placeholder="+33 6 00 00 00 00">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="rdvSubject">Objet du Rendez-vous / Mission *</label>
+            <input type="text" class="form-control" id="rdvSubject" required placeholder="Ex: Étude de faisabilité Villa 140m²">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="rdvAddress">📍 Adresse du Rendez-vous / Chantier (Navigation Waze) *</label>
+            <div style="display: flex; gap: 0.5rem;">
+              <input type="text" class="form-control" id="rdvAddress" placeholder="Ex: 28 Chemin du Vallon, 13090 Aix-en-Provence" required>
+              <button type="button" class="btn btn-waze" id="btnPreviewWaze" title="Tester l'itinéraire Waze" style="padding: 0.5rem 0.85rem; white-space: nowrap;">
+                🚙 Waze
+              </button>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="rdvDate">Date du Rendez-vous *</label>
+              <input type="date" class="form-control" id="rdvDate" required>
+            </div>
+            <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+              <div>
+                <label class="form-label" for="rdvStartTime">Début *</label>
+                <input type="time" class="form-control" id="rdvStartTime" required>
+              </div>
+              <div>
+                <label class="form-label" for="rdvEndTime">Fin *</label>
+                <input type="time" class="form-control" id="rdvEndTime" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="rdvAmount">Montant Prévisionnel (€)</label>
+              <input type="number" class="form-control" id="rdvAmount" min="0" step="100" placeholder="5000">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="rdvStatus">Statut Initial</label>
+              <select class="form-control" id="rdvStatus">
+                <option value="new">Nouveau / À qualifier</option>
+                <option value="confirmed">Confirmé</option>
+                <option value="pending">En attente</option>
+                <option value="done">Honoré / Gagné</option>
+                <option value="cancelled">Annulé / Perdu</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="rdvNotes">Notes & Retranscription</label>
+            <textarea class="form-control" id="rdvNotes" rows="2" placeholder="Détails du projet, cahier des charges, remarques..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer" style="display: flex; gap: 0.5rem; justify-content: flex-end; flex-wrap: wrap;">
+          <button type="button" class="btn btn-secondary" id="cancelModalBtn">Annuler</button>
+          <button type="button" class="btn btn-google" id="saveAndGoogleBtn">🇬 Enregistrer & Ajouter à Google</button>
+          <button type="submit" class="btn btn-primary">Enregistrer le Rendez-vous</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. Modale Authentification Supabase Cloud -->
+  <div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
+    <div class="modal-content" style="max-width: 440px;">
+      <div class="modal-header">
+        <h3 id="authModalTitle" style="font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
+          <span>☁️</span> <span>Espace Supabase Cloud</span>
+        </h3>
+        <button type="button" class="btn-icon" id="closeAuthModalBtn" aria-label="Fermer la modale">✕</button>
+      </div>
+
+      <!-- Onglets Connexion / Inscription -->
+      <div style="display: flex; border-bottom: 1px solid var(--border-subtle); padding: 0 1.25rem; background: var(--bg-card-subtle, rgba(0,0,0,0.15));">
+        <button type="button" class="auth-tab-btn active" id="tabAuthLogin" style="flex: 1; padding: 0.75rem; background: none; border: none; color: var(--text-main); font-weight: 600; border-bottom: 2px solid var(--accent-primary); cursor: pointer;">
+          Connexion
+        </button>
+        <button type="button" class="auth-tab-btn" id="tabAuthRegister" style="flex: 1; padding: 0.75rem; background: none; border: none; color: var(--text-muted); font-weight: 600; border-bottom: 2px solid transparent; cursor: pointer;">
+          Créer un compte
+        </button>
+      </div>
+
+      <form id="authForm">
+        <div class="modal-body" style="padding: 1.25rem;">
+          <!-- Alerte Erreur / Succès -->
+          <div id="authAlert" style="display: none; padding: 0.75rem; border-radius: var(--radius-md); font-size: 0.8rem; margin-bottom: 1rem;"></div>
+
+          <div class="form-group" id="groupAuthName" style="display: none;">
+            <label class="form-label" for="authName">Nom complet / Entreprise</label>
+            <input type="text" class="form-control" id="authName" placeholder="Ex: Sébastien Dupont">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="authEmail">Adresse Email *</label>
+            <input type="email" class="form-control" id="authEmail" required placeholder="contact@entreprise.fr" autocomplete="email">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="authPassword">Mot de passe *</label>
+            <input type="password" class="form-control" id="authPassword" required placeholder="••••••••" minlength="6" autocomplete="current-password">
+            <span style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.25rem; display: block;">6 caractères minimum.</span>
+          </div>
+
+          <div style="padding: 0.6rem 0.8rem; background: rgba(59, 130, 246, 0.08); border-radius: var(--radius-md); border: 1px solid rgba(59, 130, 246, 0.2); font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">
+            🔒 <strong>Sécurité RLS</strong> : Vos données clients et rendez-vous sont isolées et chiffrées selon les règles Row Level Security.
+          </div>
+        </div>
+
+        <div class="modal-footer" style="display: flex; gap: 0.5rem; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+          <button type="button" class="btn btn-secondary btn-pill" id="authGuestBtn" style="font-size: 0.75rem;" title="Continuer sans compte sur IndexedDB locale">
+            🔌 Mode Invité (Offline)
+          </button>
+          <div style="display: flex; gap: 0.5rem;">
+            <button type="button" class="btn btn-secondary" id="cancelAuthModalBtn">Annuler</button>
+            <button type="submit" class="btn btn-primary" id="authSubmitBtn">Se connecter</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Conteneur de Toasts -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- Scripts Applicatifs & Supabase Cloud -->
+  <script src="js/libs/supabase.js"></script>
+  <script src="js/supabase_config.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/sync.js"></script>
+  <script src="js/supabaseSync.js"></script>
+  <script src="js/ai_assistant.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
